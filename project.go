@@ -109,7 +109,7 @@ func main() {
 		fmt.Println("Error loading the .env file")
 	}
 
-	// Create an AWS session for US East 1.
+	// Create an AWS session for US East 1. REE
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String("us-east-1"),
 	}))
