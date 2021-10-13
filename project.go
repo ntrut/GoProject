@@ -31,7 +31,23 @@ type cryptoData struct {
 		Vwap24Hr          string `json:"vwap24Hr"`
 		Explorer          string `json:"explorer"`
 	} `json:"data"`
-	//Timestamp int64 `json:"timestamp"`
+	Timestamp int64 `json:"timestamp"`
+}
+
+type Item struct {
+	Timestamp         int64  `json:"timestamp"`
+	Id                string `json:"id"`
+	Rank              string `json:"rank"`
+	Symbol            string `json:"symbol"`
+	Name              string `json:"name"`
+	Supply            string `json:"supply"`
+	MaxSupply         string `json:"maxSupply"`
+	MarketCapUsd      string `json:"marketCapUsd"`
+	VolumeUsd24Hr     string `json:"volumeUsd24Hr"`
+	PriceUsd          string `json:"priceUsd"`
+	ChangePercent24hr string `json:"changePercent24hr"`
+	Vwap24Hr          string `json:"vwap24Hr"`
+	Explorer          string `json:"explorer"`
 }
 
 func goCode(client *loggly.ClientType, tk *time.Ticker, db *dynamodb.DynamoDB, coin string) {
@@ -81,8 +97,24 @@ func goCode(client *loggly.ClientType, tk *time.Ticker, db *dynamodb.DynamoDB, c
 
 		_ = client.Send("info", "Amount of data is: "+bodysize)
 
+		/*create a new item and sent this item to dynamodb*/
+		item := Item{
+			Timestamp:         dataStruct.Timestamp,
+			Id:                dataStruct.Key.Id,
+			Rank:              dataStruct.Key.Rank,
+			Symbol:            dataStruct.Key.Symbol,
+			Name:              dataStruct.Key.Name,
+			Supply:            dataStruct.Key.Supply,
+			MaxSupply:         dataStruct.Key.MaxSupply,
+			MarketCapUsd:      dataStruct.Key.MarketCapUsd,
+			VolumeUsd24Hr:     dataStruct.Key.VolumeUsd24Hr,
+			PriceUsd:          dataStruct.Key.PriceUsd,
+			ChangePercent24hr: dataStruct.Key.ChangePercent24hr,
+			Vwap24Hr:          dataStruct.Key.Vwap24Hr,
+		}
+
 		//marshall map the struct
-		av, err := dynamodbattribute.MarshalMap(dataStruct.Key)
+		av, err := dynamodbattribute.MarshalMap(item)
 		if err != nil {
 			_ = client.Send("error", "Got error marshalling new movie item")
 		}
@@ -121,7 +153,7 @@ func main() {
 	client := loggly.New("nazartrut")
 
 	//create poll
-	duration := time.Duration(20) * time.Second //every 20 seconds
+	duration := time.Duration(60) * time.Second //every 1 minute
 
 	tk := time.NewTicker(duration)
 
