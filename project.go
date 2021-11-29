@@ -98,6 +98,7 @@ func goCode(client *loggly.ClientType, tk *time.Ticker, db *dynamodb.DynamoDB, c
 		_ = client.Send("info", "Amount of data is: "+bodysize)
 
 		/*create a new item and sent this item to dynamodb*/
+		//date := ime.Now().Format("01-02-2006")
 		item := Item{
 			Timestamp:         dataStruct.Timestamp,
 			Id:                dataStruct.Key.Id,
@@ -118,7 +119,7 @@ func goCode(client *loggly.ClientType, tk *time.Ticker, db *dynamodb.DynamoDB, c
 		if err != nil {
 			_ = client.Send("error", "Got error marshalling new movie item")
 		}
-		tableName := "Crypto"
+		tableName := "ntrut-Crypto"
 		//fmt.Println(av)
 		input := &dynamodb.PutItemInput{
 			Item:      av,
@@ -152,15 +153,15 @@ func main() {
 	//define a client for loggly
 	client := loggly.New("nazartrut")
 
-	//create poll
-	duration := time.Duration(60) * time.Second //every 1 minute
+	//create poll 3600
+	duration := time.Duration(3600) * time.Second //every 1 hour
 
 	tk := time.NewTicker(duration)
+	top20crypto := [20]string{"bitcoin", "ethereum", "ripple", "bitcoin-cash", "eos", "stellar", "litecoin", "cardano", "tether", "iota", "tron", "ethereum-classic", "monero", "neo", "dash", "binance-coin", "nem", "tezos", "zcash", "dogecoin"}
 
 	for range tk.C {
-		goCode(client, tk, db, "bitcoin")
-		goCode(client, tk, db, "dogecoin")
-		goCode(client, tk, db, "ethereum")
+		for index := range top20crypto {
+			goCode(client, tk, db, top20crypto[index])
+		}
 	}
-
 }
