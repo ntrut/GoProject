@@ -149,7 +149,7 @@ func main() {
 	client := loggly.New("nazartrut")
 
 	//create poll 3600
-	duration := time.Duration(60) * time.Second //every 1 hour
+	duration := time.Duration(3600) * time.Second //every 1 hour
 
 	tk := time.NewTicker(duration)
 	top20crypto := [20]string{"bitcoin", "ethereum", "ripple", "bitcoin-cash", "eos", "stellar", "litecoin", "cardano", "tether", "iota", "tron", "ethereum-classic", "monero", "neo", "dash", "binance-coin", "nem", "tezos", "zcash", "dogecoin"}
