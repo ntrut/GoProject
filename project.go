@@ -137,10 +137,6 @@ func goCode(client *loggly.ClientType, tk *time.Ticker, db *dynamodb.DynamoDB, c
 }
 
 func main() {
-	err := godotenv.Load("app.env")
-	if err != nil {
-		fmt.Println("Error loading the .env file")
-	}
 
 	// Create an AWS session for US East 1. REE
 	sess := session.Must(session.NewSession(&aws.Config{
